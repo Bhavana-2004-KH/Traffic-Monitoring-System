@@ -1,0 +1,29 @@
+{
+    "mode": "single",
+    "video_name": "traffic_intersection4.mp4",
+    "video_width": 478,
+    "video_height": 850,
+    "road_names": [
+        "Single Road"
+    ],
+    "zones": {
+        "Single Road": [
+            [
+                0.0,
+                0.0
+            ],
+            [
+                1.0,
+                0.0
+            ],
+            [
+                1.0,
+                1.0
+            ],
+            [
+                0.0,
+                1.0
+            ]
+        ]
+    }
+}

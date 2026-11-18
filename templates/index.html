@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Traffic Video Analyzer - Dashboard</title>
+  <meta name="description" content="Intelligent traffic video monitoring dashboard featuring YOLOv8 detection, BoT-SORT tracking, Auto-ARIMA forecasting, and adaptive green signal timing.">
+  <link rel="stylesheet" href="/static/css/style.css">
+<link rel="stylesheet" href="/static/css/custom.css">
+  <script src="/static/js/chart.min.js"></script>
+  <script>
+    if (typeof Chart === 'undefined') {
+      document.write('<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"><\/script>');
+    }
+  </script>
+   <script src="/static/js/custom.js"></script>
+</head>
+<body>
+  <div class="app-container">
+    <!-- ====================================================================
+         SIDEBAR NAVIGATION
+         ==================================================================== -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="brand-badge">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          SYSTEM READY
+        </div>
+        <div class="brand-title">Traffic Video Analyzer</div>
+        <div class="brand-subtitle">Intelligent Traffic Monitoring</div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <!-- Exactly 6 Clean Sections -->
+        <a class="nav-link active" data-section="video-analysis" id="nav-video-analysis">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+          <span>1. Video Analysis</span>
+        </a>
+
+        <a class="nav-link" data-section="vehicle-counts" id="nav-vehicle-counts">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+          <span>2. Vehicle Counts</span>
+        </a>
+
+        <a class="nav-link" data-section="turning-analysis" id="nav-turning-analysis">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 18l6-6-6-6"/></svg>
+          <span>3. Turning Analysis</span>
+        </a>
+
+        <a class="nav-link" data-section="traffic-forecast" id="nav-traffic-forecast">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          <span>4. Traffic Forecast Graph</span>
+        </a>
+
+        <a class="nav-link" data-section="green-time" id="nav-green-time">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <span>5. Adaptive Green Time</span>
+        </a>
+
+        <a class="nav-link" data-section="processed-videos-reports" id="nav-processed-videos-reports">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polygon points="10 9 9 9 8 9"/></svg>
+          <span>6. Processed Video & Reports</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="status-indicator-box">
+          <div class="pulse-dot" id="sidebar-pulse-dot"></div>
+          <span id="sidebar-status-text">Status: Ready</span>
+        </div>
+        <div>Model: YOLOv8 + BoT-SORT</div>
+        <div>Forecasting: Auto-ARIMA</div>
+      </div>
+    </aside>
+
+    <!-- ====================================================================
+         MAIN CONTENT AREA
+         ==================================================================== -->
+    <main class="main-content">
+      <header class="topbar">
+        <div class="topbar-left">
+          <h1 id="page-title">Video Analysis</h1>
+          <p id="page-subtitle">Select or upload traffic footage and execute the video analysis pipeline</p>
+        </div>
+        <div class="topbar-actions">
+          <span id="active-video-indicator" class="badge badge-idle" style="font-size: 12px; font-weight: 600;">No Video Selected</span>
+          <span id="global-status-badge" class="badge badge-idle">System Ready</span>
+        </div>
+      </header>
+
+      <div class="content-body">
+
+        <!-- ================================================================
+             SECTION 1: VIDEO ANALYSIS
+             ================================================================ -->
+        <section class="dashboard-section active" id="sec-video-analysis">
+          <!-- Active video notice / status bar -->
+          <div id="video-analysis-status-notice" class="alert alert-info" style="display:none; margin-bottom: 16px;"></div>
+
+          <div class="two-col-grid">
+            <!-- Left Card: Controls -->
+            <div class="panel">
+              <div class="panel-header">
+                <div>
+                  <div class="panel-title">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+                    Video Selection & Execution
+                  </div>
+                  <div class="panel-subtitle">Select existing footage or upload a new traffic recording</div>
+                </div>
+              </div>
+
+              <!-- Video Dropdown -->
+              <div class="form-group">
+                <label class="form-label" for="video-select">Choose Traffic Video</label>
+                <select class="form-select" id="video-select">
+                  <option value="">-- Select from available videos --</option>
+                </select>
+              </div>
+
+              <!-- Upload Button -->
+              <div class="form-group">
+                <label class="form-label">Or Upload New Video File</label>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <input type="file" id="video-file-input" accept=".mp4,.avi,.mov,.mkv" style="display:none;">
+                  <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('video-file-input').click()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                    Choose File (.mp4, .avi, .mov, .mkv)
+                  </button>
+                  <span id="selected-file-label" style="font-size: 12.5px; color: var(--text-secondary);">No file chosen</span>
+                </div>
+                <div id="upload-status-msg" style="margin-top: 6px; font-size: 12px;"></div>
+              </div>
+
+              <!-- Road Layout Selector -->
+              <div class="form-group" style="padding-top: 8px; border-top: 1px solid var(--border-color);">
+                <label class="form-label">Road Layout Mode</label>
+                <div style="display: flex; gap: 18px; margin-bottom: 8px;">
+                  <label style="display: flex; align-items: center; gap: 6px; font-size: 13.5px; cursor: pointer;">
+                    <input type="radio" name="road-mode" value="intersection" checked> Intersection (Multi-Road)
+                  </label>
+                  <label style="display: flex; align-items: center; gap: 6px; font-size: 13.5px; cursor: pointer;">
+                    <input type="radio" name="road-mode" value="single"> Single Road
+                  </label>
+                </div>
+              </div>
+
+              <!-- Number of Roads (shown for Intersection) -->
+              <div class="form-group" id="road-count-container">
+                <label class="form-label" for="road-count-select">Number of Road Approaches</label>
+                <select class="form-select" id="road-count-select">
+                  <option value="2">2 Roads</option>
+                  <option value="3">3 Roads</option>
+                  <option value="4" selected>4 Roads (Default)</option>
+                  <option value="5">5 Roads</option>
+                  <option value="6">6 Roads</option>
+                </select>
+              </div>
+
+              <!-- Execution Buttons -->
+              <div style="display: flex; gap: 10px; margin-top: 18px;">
+                <button type="button" class="btn btn-primary" id="btn-start-analysis">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                  Start Analysis
+                </button>
+
+              </div>
+
+              <!-- Progress Bar Track (visible when running) -->
+              <div class="progress-container" id="analysis-progress-container" style="margin-top: 18px;">
+                <div class="progress-header">
+                  <span id="analysis-progress-label">Processing video frames...</span>
+                  <span id="analysis-progress-percent">0%</span>
+                </div>
+                <div class="progress-bar-track">
+                  <div class="progress-bar-fill" id="analysis-progress-fill"></div>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--text-secondary); margin-top: 6px;">
+                  <span id="analysis-stats-frames">Frame: 0 / 0</span>
+                  <span id="analysis-stats-active">Active Vehicles: 0</span>
+                  <span id="analysis-stats-total">Total Counted: 0</span>
+                  <span id="analysis-stats-elapsed">Elapsed: 0.0s</span>
+                </div>
+                <div class="terminal-box" id="analysis-terminal-log" style="margin-top: 10px; height: 90px;">Waiting for execution...</div>
+              </div>
+            </div>
+
+            <!-- Right Card: Video Player -->
+            <div class="panel">
+              <div class="panel-header">
+                <div>
+                  <div class="panel-title">Video Playback</div>
+                  <div class="panel-subtitle" id="player-mode-subtitle">Previewing selected video footage</div>
+                </div>
+                <div class="video-mode-tabs">
+                  <button type="button" class="tab-btn active" id="btn-tab-preview" onclick="switchPlayerMode('preview')">
+                    Input Preview
+                  </button>
+                  <button type="button" class="tab-btn" id="btn-tab-processed" onclick="switchPlayerMode('processed')">
+                    Processed Output
+                  </button>
+                </div>
+              </div>
+
+              <div class="video-wrapper" id="video-wrapper">
+                <div class="video-placeholder" id="video-placeholder">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                  <div id="video-placeholder-text">Select a traffic video to preview footage</div>
+                </div>
+                <video id="main-video-player" controls preload="metadata" style="display:none; width: 100%; height: 100%;"></video>
+              </div>
+
+              <div id="video-error-message" class="alert alert-danger" style="display:none; margin-top: 10px;">
+                <span id="video-error-text">Video could not be loaded.</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================================================================
+             SECTION 2: VEHICLE COUNTS
+             ================================================================ -->
+        <section class="dashboard-section" id="sec-vehicle-counts">
+          <div class="panel">
+            <div class="panel-header">
+              <div>
+                <div class="panel-title">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                  Vehicle Counts
+                </div>
+                <div class="panel-subtitle">Accurate distinct vehicle counts produced by existing YOLOv8 and BoT-SORT tracking</div>
+              </div>
+              <span class="badge badge-completed" id="counts-total-badge">Total Vehicle Count: —</span>
+            </div>
+
+            <div id="counts-empty-notice" class="empty-state" style="display:none; margin-bottom: 20px;">
+              <div class="empty-state-title">No vehicle counts available</div>
+              <div class="empty-state-desc">Please select a video and run analysis to track and count distinct vehicles.</div>
+            </div>
+
+            <div id="counts-content-area">
+              <!-- KPI Cards Row -->
+              <div class="kpi-row" style="margin-bottom: 24px;">
+                <div class="kpi-card highlight">
+                  <span class="kpi-label">TOTAL VEHICLE COUNT</span>
+                  <span class="kpi-value" id="kpi-total-vehicles">—</span>
+                </div>
+                <div class="kpi-card">
+                  <span class="kpi-label">Cars</span>
+                  <span class="kpi-value" id="kpi-cars">—</span>
+                </div>
+                <div class="kpi-card">
+                  <span class="kpi-label">Two-Wheelers</span>
+                  <span class="kpi-value" id="kpi-twowheelers">—</span>
+                </div>
+                <div class="kpi-card">
+                  <span class="kpi-label">Buses</span>
+                  <span class="kpi-value" id="kpi-buses">—</span>
+                </div>
+                <div class="kpi-card">
+                  <span class="kpi-label">Trucks</span>
+                  <span class="kpi-value" id="kpi-trucks">—</span>
+                </div>
+                <div class="kpi-card">
+                  <span class="kpi-label">Three-Wheelers</span>
+                  <span class="kpi-value" id="kpi-threewheelers">—</span>
+                </div>
+                <div class="kpi-card">
+                  <span class="kpi-label">LCVs</span>
+                  <span class="kpi-value" id="kpi-lcvs">—</span>
+                </div>
+                <div class="kpi-card">
+                  <span class="kpi-label">Bicycles</span>
+                  <span class="kpi-value" id="kpi-bicycles">—</span>
+                </div>
+              </div>
+
+              <!-- Breakdown Table -->
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Vehicle Class</th>
+                    <th>Supported Category</th>
+                    <th style="text-align: right;">Distinct Count</th>
+                    <th style="text-align: right;">Traffic Share</th>
+                  </tr>
+                </thead>
+                <tbody id="vehicle-counts-table-body">
+                  <tr><td colspan="4" style="text-align:center; color: var(--text-muted); padding: 18px;">Waiting for analysis results.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================================================================
+             SECTION 3: TURNING ANALYSIS
+             ================================================================ -->
+        <section class="dashboard-section" id="sec-turning-analysis">
+          <div class="panel">
+            <div class="panel-header">
+              <div>
+                <div class="panel-title">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+                  Turning Analysis
+                </div>
+                <div class="panel-subtitle">Actual movement patterns classified across approach zones by the existing program</div>
+              </div>
+              <span class="badge badge-idle" id="turning-status-badge">Intersection Mode</span>
+            </div>
+
+            <!-- Single Road Notice -->
+            <div id="turning-single-road-notice" class="alert alert-info" style="display:none; margin-bottom: 20px;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+              <div>
+                <strong>Single Road Mode Active:</strong> Turning classification is not applicable because traffic flows along a single approach corridor without intersecting branches.
+              </div>
+            </div>
+
+            <!-- Empty State Notice -->
+            <div id="turning-empty-notice" class="empty-state" style="display:none; margin-bottom: 20px;">
+              <div class="empty-state-title">Turning data is unavailable</div>
+              <div class="empty-state-desc">Please run an intersection analysis to observe and classify vehicle turning movements.</div>
+            </div>
+
+            <!-- Turning Cards Grid -->
+            <div id="turning-content-area">
+              <div class="turning-grid" style="margin-bottom: 20px;">
+                <div class="turn-box">
+                  <div class="turn-title">Left Turns</div>
+                  <div class="turn-count" id="turning-val-left">—</div>
+                  <div style="font-size: 11.5px; color: var(--text-muted); margin-top: 4px;">Vehicles turned left</div>
+                </div>
+                <div class="turn-box">
+                  <div class="turn-title">Straight Movements</div>
+                  <div class="turn-count" id="turning-val-straight">—</div>
+                  <div style="font-size: 11.5px; color: var(--text-muted); margin-top: 4px;">Vehicles traveled straight</div>
+                </div>
+                <div class="turn-box">
+                  <div class="turn-title">Right Turns</div>
+                  <div class="turn-count" id="turning-val-right">—</div>
+                  <div style="font-size: 11.5px; color: var(--text-muted); margin-top: 4px;">Vehicles turned right</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================================================================
+             SECTION 4: TRAFFIC FORECAST GRAPH
+             ================================================================ -->
+        <section class="dashboard-section" id="sec-traffic-forecast">
+          <div class="panel">
+            <div class="panel-header">
+              <div>
+                <div class="panel-title">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                  Traffic Flow Forecast
+                </div>
+                <div class="panel-subtitle">Compact comparison of actual historical traffic counts vs Auto-ARIMA predicted values</div>
+              </div>
+              <span class="badge badge-idle" id="forecast-status-badge">Status</span>
+            </div>
+
+            <!-- Forecast Value Header Card -->
+            <div style="display: flex; gap: 16px; margin-bottom: 20px; flex-wrap: wrap;">
+              <div style="flex: 1; min-width: 240px; background-color: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 14px 18px;">
+                <div style="font-size: 11.5px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Next Interval Demand Forecast</div>
+                <div style="font-size: 24px; font-weight: 800; color: var(--primary-green-hover); margin-top: 4px;" id="forecast-next-value">
+                  Waiting for analysis...
+                </div>
+                <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;" id="forecast-order-display">
+                  Fitted ARIMA Model: N/A
+                </div>
+              </div>
+              <div style="flex: 1; min-width: 240px; background-color: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 14px 18px;">
+                <div style="font-size: 11.5px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Forecast Specifications</div>
+                <div style="font-size: 12.5px; color: var(--text-secondary); line-height: 1.6; margin-top: 4px;">
+                  <div>• <strong>Horizon:</strong> 5.0 seconds (1 interval ahead)</div>
+                  <div>• <strong>Warmup Requirement:</strong> 2 observation intervals (10.0s of video)</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Single Compact Line Graph -->
+            <div class="chart-container" style="height: 320px;" id="forecast-chart-wrapper">
+              <canvas id="trafficForecastChart"></canvas>
+            </div>
+
+            <!-- Empty State for Forecast -->
+            <div class="empty-state" id="forecast-chart-empty" style="display:none; padding: 28px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              <div class="empty-state-title">Forecast Data Unavailable</div>
+              <div class="empty-state-desc" id="forecast-chart-empty-msg">
+                Auto-ARIMA forecasting requires at least 2 completed observation intervals (10 seconds of video time) to fit and predict traffic counts.
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================================================================
+             SECTION 5: ADAPTIVE GREEN-TIME ALLOCATION
+             ================================================================ -->
+        <section class="dashboard-section" id="sec-green-time">
+          <div class="panel">
+            <div class="panel-header">
+              <div>
+                <div class="panel-title">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  Adaptive Green-Time Allocation
+                </div>
+                <div class="panel-subtitle">Actual road-wise traffic demand and allocated green light durations returned by the existing signal controller</div>
+              </div>
+              <span class="badge badge-completed" id="green-time-mode-badge">Intersection Mode</span>
+            </div>
+
+            <!-- Green Time Table (NO RED BADGES OR STATUSES) -->
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Road Approach</th>
+                  <th style="text-align: right;">Actual Traffic Demand</th>
+                  <th style="text-align: right;">Allocated Green Time</th>
+                </tr>
+              </thead>
+              <tbody id="signal-table-body">
+                <tr><td colspan="3" style="text-align: center; color: var(--text-muted); padding: 20px;">No green-time allocation data available. Please run video analysis.</td></tr>
+              </tbody>
+            </table>
+
+            <div style="margin-top: 20px; padding: 12px 16px; background-color: var(--bg-subtle); border-radius: var(--radius-sm); border: 1px solid var(--border-color); font-size: 12px; color: var(--text-muted);">
+              <strong>Note:</strong> Displays only the actual green-time allocations calculated by the original signal controller for each configured road approach.
+            </div>
+          </div>
+        </section>
+
+        <!-- ================================================================
+             SECTION 6: PROCESSED VIDEO AND REPORTS, IF AVAILABLE
+             ================================================================ -->
+        <section class="dashboard-section" id="sec-processed-videos-reports">
+          <div class="two-col-grid">
+            <!-- Processed Video Player -->
+            <div class="panel">
+              <div class="panel-header">
+                <div>
+                  <div class="panel-title">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+                    Processed Video Playback
+                  </div>
+                  <div class="panel-subtitle">Annotated video with vehicle bounding boxes and BoT-SORT IDs</div>
+                </div>
+                <a href="#" class="btn btn-primary btn-sm" id="btn-download-processed-video" style="display:none;" download>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download Video
+                </a>
+              </div>
+
+              <div class="video-wrapper">
+                <div class="video-placeholder" id="processed-video-placeholder">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                  <div id="processed-placeholder-text">Processed video is not available yet for this selection.</div>
+                </div>
+                <video id="processed-video-element" controls preload="metadata" style="display:none; width: 100%; height: 100%;"></video>
+              </div>
+            </div>
+
+            <!-- Reports and Export Files -->
+            <div class="panel">
+              <div class="panel-header">
+                <div>
+                  <div class="panel-title">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polygon points="10 9 9 9 8 9"/></svg>
+                    Generated Reports & Output Files
+                  </div>
+                  <div class="panel-subtitle">Downloadable output files produced by the original program</div>
+                </div>
+                <button class="btn btn-secondary btn-sm" onclick="loadOutputsDirectory()">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+                  Refresh
+                </button>
+              </div>
+
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>File Name</th>
+                    <th>Type</th>
+                    <th>Size</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="reports-table-body">
+                  <tr><td colspan="4" style="text-align: center; color: var(--text-muted); padding: 18px;">Loading generated reports...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="/static/js/dashboard.js"></script>
+</body>
+</html>

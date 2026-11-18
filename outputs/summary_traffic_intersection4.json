@@ -1,0 +1,59 @@
+{
+    "video_metadata": {
+        "source_path": "K:\\Projects\\traffic-monitoring\\uploads\\traffic_intersection4.mp4",
+        "mode": "single",
+        "road_count": 1,
+        "resolution": "478x850",
+        "fps": 30.03,
+        "total_frames_processed": 27
+    },
+    "cumulative_vehicle_counts": {
+        "Car": 10,
+        "Bus": 1,
+        "Truck": 0,
+        "Three Wheeler": 0,
+        "Two Wheeler": 7,
+        "LCV": 0,
+        "Bicycle": 0
+    },
+    "total_unique_vehicles": 18,
+    "turning_patterns": {
+        "turning": "Not applicable"
+    },
+    "forecasting": {
+        "final_forecast": null,
+        "status": "Preparing forecast...",
+        "arima_order": "N/A",
+        "total_intervals_collected": 0,
+        "min_intervals_required": 2,
+        "road_forecasts": {
+            "Single Road": {
+                "final_forecast": null,
+                "status": "Insufficient traffic intervals for Auto-ARIMA (0/2 intervals collected)",
+                "arima_order": "N/A",
+                "total_intervals_collected": 0,
+                "min_intervals_required": 2
+            }
+        }
+    },
+    "signal_timing": {
+        "mode": "single",
+        "recommended_green_seconds": 20,
+        "road_signals": {
+            "Single Road": {
+                "vehicles": 18,
+                "green_seconds": 20,
+                "forecast": null,
+                "forecast_display": "Preparing forecast...",
+                "signal_state": "GREEN",
+                "phase_remaining": 19
+            }
+        }
+    },
+    "output_files": {
+        "processed_video": "K:\\Projects\\traffic-monitoring\\outputs\\processed_traffic_intersection4.mp4",
+        "traffic_counts_csv": "K:\\Projects\\traffic-monitoring\\outputs\\traffic_counts_traffic_intersection4.csv",
+        "forecast_csv": "K:\\Projects\\traffic-monitoring\\outputs\\forecast_traffic_intersection4.csv",
+        "summary_json": "K:\\Projects\\traffic-monitoring\\outputs\\summary_traffic_intersection4.json"
+    }
+}

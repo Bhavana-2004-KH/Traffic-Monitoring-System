@@ -1,0 +1,37 @@
+{
+    "video_metadata": {
+        "source_path": "sample_videos/real_traffic.mp4",
+        "resolution": "478x850",
+        "fps": 59.94,
+        "total_frames_processed": 50
+    },
+    "cumulative_vehicle_counts": {
+        "Car": 8,
+        "Bus": 1,
+        "Truck": 0,
+        "Three Wheeler": 3,
+        "Two Wheeler": 8,
+        "LCV": 0,
+        "Bicycle": 3
+    },
+    "total_unique_vehicles": 23,
+    "turning_patterns": {
+        "straight": 1,
+        "left_turn": 0,
+        "right_turn": 0
+    },
+    "forecasting": {
+        "final_forecast": null,
+        "arima_order": "N/A",
+        "total_intervals_collected": 0
+    },
+    "signal_timing": {
+        "recommended_green_seconds": 65
+    },
+    "output_files": {
+        "processed_video": "K:\\Projects\\traffic-monitoring\\outputs\\processed_video.mp4",
+        "traffic_counts_csv": "K:\\Projects\\traffic-monitoring\\outputs\\traffic_counts.csv",
+        "forecast_csv": "K:\\Projects\\traffic-monitoring\\outputs\\forecast.csv",
+        "summary_json": "K:\\Projects\\traffic-monitoring\\outputs\\output.json"
+    }
+}

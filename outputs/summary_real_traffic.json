@@ -1,0 +1,108 @@
+{
+    "video_metadata": {
+        "source_path": "K:\\Projects\\traffic-monitoring\\uploads\\real_traffic.mp4",
+        "mode": "intersection",
+        "road_count": 4,
+        "resolution": "478x850",
+        "fps": 59.94,
+        "total_frames_processed": 1644
+    },
+    "cumulative_vehicle_counts": {
+        "Car": 66,
+        "Bus": 7,
+        "Truck": 0,
+        "Three Wheeler": 15,
+        "Two Wheeler": 64,
+        "LCV": 10,
+        "Bicycle": 11
+    },
+    "total_unique_vehicles": 173,
+    "turning_patterns": {
+        "straight": 46,
+        "left_turn": 12,
+        "right_turn": 10,
+        "left": 12,
+        "right": 10
+    },
+    "forecasting": {
+        "final_forecast": 2,
+        "status": "Next Traffic: 2 vehicles",
+        "arima_order": "(1, 0, 0)",
+        "total_intervals_collected": 5,
+        "min_intervals_required": 2,
+        "road_forecasts": {
+            "Road 1": {
+                "final_forecast": 2,
+                "status": "Next Traffic: 2",
+                "arima_order": "(1, 0, 0)",
+                "total_intervals_collected": 5,
+                "min_intervals_required": 2
+            },
+            "Road 2": {
+                "final_forecast": 20,
+                "status": "Next Traffic: 20",
+                "arima_order": "(1, 0, 0)",
+                "total_intervals_collected": 5,
+                "min_intervals_required": 2
+            },
+            "Road 3": {
+                "final_forecast": 11,
+                "status": "Next Traffic: 11",
+                "arima_order": "(1, 0, 1)",
+                "total_intervals_collected": 5,
+                "min_intervals_required": 2
+            },
+            "Road 4": {
+                "final_forecast": 15,
+                "status": "Next Traffic: 15",
+                "arima_order": "(0, 0, 0)",
+                "total_intervals_collected": 5,
+                "min_intervals_required": 2
+            }
+        }
+    },
+    "signal_timing": {
+        "mode": "intersection",
+        "recommended_green_seconds": null,
+        "road_signals": {
+            "Road 1": {
+                "vehicles": 33,
+                "green_seconds": 74,
+                "forecast": 2,
+                "forecast_display": "Next Traffic: 2 vehicles",
+                "signal_state": "GREEN",
+                "phase_remaining": 46
+            },
+            "Road 2": {
+                "vehicles": 58,
+                "green_seconds": 71,
+                "forecast": 20,
+                "forecast_display": "Next Traffic: 20 vehicles",
+                "signal_state": "RED",
+                "phase_remaining": 0
+            },
+            "Road 3": {
+                "vehicles": 50,
+                "green_seconds": 90,
+                "forecast": 11,
+                "forecast_display": "Next Traffic: 11 vehicles",
+                "signal_state": "RED",
+                "phase_remaining": 0
+            },
+            "Road 4": {
+                "vehicles": 71,
+                "green_seconds": 90,
+                "forecast": 15,
+                "forecast_display": "Next Traffic: 15 vehicles",
+                "signal_state": "RED",
+                "phase_remaining": 0
+            }
+        }
+    },
+    "output_files": {
+        "processed_video": "K:\\Projects\\traffic-monitoring\\outputs\\processed_real_traffic.mp4",
+        "traffic_counts_csv": "K:\\Projects\\traffic-monitoring\\outputs\\traffic_counts_real_traffic.csv",
+        "forecast_csv": "K:\\Projects\\traffic-monitoring\\outputs\\forecast_real_traffic.csv",
+        "summary_json": "K:\\Projects\\traffic-monitoring\\outputs\\summary_real_traffic.json"
+    }
+}

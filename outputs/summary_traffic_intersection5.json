@@ -1,0 +1,48 @@
+{
+    "video_metadata": {
+        "source_path": "K:\\Projects\\traffic-monitoring\\uploads\\traffic_intersection5.mp4",
+        "mode": "single",
+        "resolution": "478x850",
+        "fps": 30.03,
+        "total_frames_processed": 64
+    },
+    "cumulative_vehicle_counts": {
+        "Car": 11,
+        "Bus": 1,
+        "Truck": 0,
+        "Three Wheeler": 0,
+        "Two Wheeler": 10,
+        "LCV": 2,
+        "Bicycle": 0
+    },
+    "total_unique_vehicles": 24,
+    "turning_patterns": {
+        "turning": "Not applicable"
+    },
+    "forecasting": {
+        "final_forecast": null,
+        "status": "Insufficient traffic intervals for Auto-ARIMA (0/5 intervals collected)",
+        "arima_order": "N/A",
+        "total_intervals_collected": 0,
+        "min_intervals_required": 5,
+        "road_forecasts": {}
+    },
+    "signal_timing": {
+        "mode": "single",
+        "recommended_green_seconds": 25,
+        "road_signals": {
+            "Single Road": {
+                "vehicles": 24,
+                "green_seconds": 25,
+                "forecast": null,
+                "forecast_display": "Collecting traffic data... (0/5 intervals)"
+            }
+        }
+    },
+    "output_files": {
+        "processed_video": "K:\\Projects\\traffic-monitoring\\outputs\\processed_traffic_intersection5.mp4",
+        "traffic_counts_csv": "K:\\Projects\\traffic-monitoring\\outputs\\traffic_counts_traffic_intersection5.csv",
+        "forecast_csv": "K:\\Projects\\traffic-monitoring\\outputs\\forecast_traffic_intersection5.csv",
+        "summary_json": "K:\\Projects\\traffic-monitoring\\outputs\\summary_traffic_intersection5.json"
+    }
+}

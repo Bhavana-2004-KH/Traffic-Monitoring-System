@@ -1,0 +1,10 @@
+/* Hide analysis UI for simplified dashboard */
+#analysis-progress-container {
+  display: none !important;
+}
+#btn-cancel-analysis {
+  display: none !important;
+}
+#analysis-terminal-log {
+  display: none !important;
+}
